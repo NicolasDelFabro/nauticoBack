@@ -5,18 +5,18 @@ import {
   ManyToOne,
   CreateDateColumn,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
+import { Users } from '../../users/entities/user.entity';
 
 @Entity()
 export class Pago {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, (user) => user.pagosRealizados)
-  socio!: User;
+  @ManyToOne(() => Users, (user) => user.pagosRealizados)
+  socio!: Users;
 
-  @ManyToOne(() => User, (user) => user.pagosRegistrados)
-  registradoPor!: User;
+  @ManyToOne(() => Users, (user) => user.pagosRegistrados)
+  registradoPor!: Users;
 
   @Column('float')
   monto!: number;

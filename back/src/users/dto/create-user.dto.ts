@@ -10,15 +10,20 @@ import {
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  nombre: string;
-
-  @IsString()
-  @IsNotEmpty()
-  apellido: string;
+  name: string;
 
   @IsNumber()
   @IsNotEmpty()
-  dni: number;
+  dni: Number;
+
+  @IsString()
+  birthdate: String;
+
+  @IsString()
+  address: String;
+
+  @IsNumber()
+  phone: String;
 
   @IsString()
   @IsEmail()

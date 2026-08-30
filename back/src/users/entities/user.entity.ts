@@ -1,19 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, Timestamp } from 'typeorm';
 import { Pago } from '../../pago/entities/pago.entity';
 
 @Entity()
-export class User {
+export class Users {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  nombre!: string;
+  @Column({ unique: true})
+  name: string;
+
+  @Column({ unique: true})
+  dni: Number
 
   @Column()
-  apellido!: string;
+  birthdate: String;
 
-  @Column({ unique: true })
-  dni!: string;
+  @Column()
+  address: String;
+
+  @Column()
+  phone: String;
 
   @Column({ unique: true })
   email!: string;
@@ -26,6 +32,12 @@ export class User {
 
   @Column()
   rol!: string;
+
+  @Column({ type: 'varchar', nullable: true})
+  verificationCode: string | null;
+
+  @Column({ type: 'timestamp', nullable: true})
+  verificationCodeExpiresAt: Date | null;
 
   @OneToMany(() => Pago, (pago) => pago.socio)
   pagosRealizados!: Pago[];
