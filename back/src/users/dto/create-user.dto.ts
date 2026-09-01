@@ -14,16 +14,16 @@ export class CreateUserDto {
 
   @IsNumber()
   @IsNotEmpty()
-  dni: Number;
+  dni: number;
 
   @IsString()
-  birthdate: String;
+  birthdate: string;
 
   @IsString()
-  address: String;
+  address: string;
 
-  @IsNumber()
-  phone: String;
+  @IsString()
+  phone: string;
 
   @IsString()
   @IsEmail()

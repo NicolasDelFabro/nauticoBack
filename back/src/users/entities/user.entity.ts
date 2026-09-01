@@ -10,18 +10,18 @@ export class Users {
   name: string;
 
   @Column({ unique: true})
-  dni: Number
+  dni: number
 
   @Column()
-  birthdate: String;
+  birthdate: string;
 
   @Column()
-  address: String;
+  address: string;
 
   @Column()
-  phone: String;
+  phone: string;
 
-  @Column({ unique: true })
+  @Column()
   email!: string;
 
   @Column()
@@ -44,4 +44,7 @@ export class Users {
 
   @OneToMany(() => Pago, (pago) => pago.registradoPor)
   pagosRegistrados!: Pago[];
+
+  @Column({ default: true })
+  mustChangePassword!: boolean;
 }

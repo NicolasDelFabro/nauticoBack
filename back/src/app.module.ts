@@ -4,33 +4,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UserModule } from './users/users.module';
 import { PagoModule } from './pago/pago.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    // 1. Carga las variables de entorno del archivo .env a nivel global
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-
-    // 2. Conecta TypeORM usando la URL del .env
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        url: configService.get<string>('DATABASE_URL'), // <-- AQUÍ SE USA LA VARIABLE
+        url: configService.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true, // Sincroniza las entidades automáticamente (solo usar en desarrollo)
+        synchronize: true,
         namingStrategy: new SnakeNamingStrategy(),
-        ssl: {
-          rejectUnauthorized: false, // Requerido para la conexión SSL de Neonw
-        },
+        ssl: { rejectUnauthorized: false },
       }),
     }),
-
-    // 3. Tus módulos
     UserModule,
     PagoModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
