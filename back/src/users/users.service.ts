@@ -27,7 +27,10 @@ export class UsersService {
       password: passwordHash,
     });
 
-    return this.userRepository.save(user);
+    const guardado = await this.userRepository.save(user);
+    const { password, ...resto } = guardado;
+    
+    return resto;
   }
 
   async getAllUsers() {

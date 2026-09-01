@@ -1,43 +1,56 @@
-// src/auth/auth.service.ts
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 import * as bcrypt from 'bcrypt';
-import { UsersService } from '../users/users.service';
+import { JwtService } from "@nestjs/jwt";
+import { Users } from "../users/entities/user.entity"
+import { LoginDto } from "./dto/login-user.dto";
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+    constructor(
+        @InjectRepository(Users)
+        private readonly userRepository: Repository<Users>,
+        private readonly jwtService: JwtService,
+      ) {}
 
-  async login(dni: number, password: string) {
-    const usuario = await this.usersService.getUserByDni(dni);
+      async login(loginDto: LoginDto) {
+        console.log("JWT SECRET:", process.env.JWT_SECRET);
+        const user = await this.userRepository.findOne({
+            where: {
+                dni: loginDto.dni,
+            },
+        });
 
-    if (!usuario) {
-      throw new UnauthorizedException('Credenciales incorrectas');
-    }
+        if(!user) {
+            throw new UnauthorizedException('Credenciales inválidas dni')
+        }
+        
+        const passwordValidate = await bcrypt.compare(
+            loginDto.password,
+            user.password
+        );
 
-    if (!usuario.active) {
-      throw new UnauthorizedException('Este usuario está dado de baja');
-    }
+        console.log("Password recibido: ", loginDto.password);
+        console.log("Password BDD: ", user.password);
+        console.log("Password hasheada: ", passwordValidate);
 
-    const passwordValida = await bcrypt.compare(password, usuario.password);
-    if (!passwordValida) {
-      throw new UnauthorizedException('Credenciales incorrectas');
-    }
+        if(!passwordValidate) {
+            throw new UnauthorizedException('Credenciales inválidas password');
+        }
 
-    const payload = { sub: usuario.id, dni: usuario.dni, rol: usuario.rol };
+        const payload = {
+            sub: user.id,
+            dni: user.dni,
+            rol: user.rol,
+        };
 
-    return {
-      access_token: this.jwtService.sign(payload),
-      mustChangePassword: usuario.mustChangePassword,
-      usuario: {
-        id: usuario.id,
-        name: usuario.name,
-        dni: usuario.dni,
-        rol: usuario.rol,
-      },
-    };
-  }
+        console.log("Antes de sign: ", process.env.JWT_SECRET);
+        const token = this.jwtService.sign(payload);
+        console.log("TOKEN: ", token);
+
+        return {
+            access_token: token
+        };
+      }
 }

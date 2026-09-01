@@ -12,14 +12,21 @@ export class UsersController {
   }
 
  @Get()
-  getUsers(@Query('name') name?: string) {
-    if (name) {
-      return this.usersService.getUserByName(name);
+  getUserByDni(@Query('dni') dni?: number) {
+    if (dni) {
+      return this.usersService.getUserByDni(dni);
     }
     return this.usersService.getAllUsers();
   }
 
-
+  @Get()
+    getUserByName(@Query('name') name?: string) {
+      if(name) {
+        return this.usersService.getUserByName(name);
+      }
+      return this.usersService.getAllUsers();
+    }
+    
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.usersService.remove(+id);
