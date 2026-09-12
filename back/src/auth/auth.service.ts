@@ -23,7 +23,7 @@ export class AuthService {
         });
 
         if(!user) {
-            throw new UnauthorizedException('Credenciales inválidas dni')
+            throw new UnauthorizedException('Credenciales inválidas')
         }
         
         const passwordValidate = await bcrypt.compare(
@@ -36,7 +36,7 @@ export class AuthService {
         console.log("Password hasheada: ", passwordValidate);
 
         if(!passwordValidate) {
-            throw new UnauthorizedException('Credenciales inválidas password');
+            throw new UnauthorizedException('Credenciales inválidas');
         }
 
         const payload = {
@@ -49,8 +49,12 @@ export class AuthService {
         const token = this.jwtService.sign(payload);
         console.log("TOKEN: ", token);
 
+        const { password, ...userWithoutPassword } = user;
+
         return {
-            access_token: token
+            access_token: token,
+            mustChangePassword: user.mustChangePassword,
+            user: userWithoutPassword
         };
       }
 }

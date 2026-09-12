@@ -44,4 +44,8 @@ export class UsersService {
   async getUserByDni(dni: number) {
     return this.userRepository.findOne({ where: { dni } });
   }
+
+  async getUserById(id: number) {
+  return this.userRepository.findOne({ where: { id } });
+}
 }
