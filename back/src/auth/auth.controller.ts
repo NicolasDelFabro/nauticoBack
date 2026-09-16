@@ -11,6 +11,8 @@ import {
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login-user.dto';
+import { SolicitarCodigoDto } from './dto/solicitar-codigo.dto';
+import { CambiarPasswordDto } from './dto/cambiar-password.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
@@ -49,5 +51,17 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   me(@Req() req: Request) {
     return req.user;
+  }
+
+  @Post('solicitar-codigo')
+  @HttpCode(200)
+  solicitarCodigo(@Body() dto: SolicitarCodigoDto) {
+    return this.authService.solicitarCodigo(dto.dni, dto.email);
+  }
+
+  @Post('cambiar-password')
+  @HttpCode(200)
+  cambiarPassword(@Body() dto: CambiarPasswordDto) {
+    return this.authService.cambiarPassword(dto.dni, dto.codigo, dto.nuevaPassword);
   }
 }
