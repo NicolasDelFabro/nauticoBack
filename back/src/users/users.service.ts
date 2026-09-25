@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +11,7 @@ export class UsersService {
     @InjectRepository(Users)
     private readonly userRepository: Repository<Users>,
   ) {}
-
+/* CREAR USUARIO NUEVO */
   async create(createUserDto: CreateUserDto) {
     const existente = await this.userRepository.findOne({
       where: { dni: createUserDto.dni },
@@ -32,20 +32,38 @@ export class UsersService {
     
     return resto;
   }
-
+/* TRAER TODOS LOS USUARIOS */
   async getAllUsers() {
     return this.userRepository.find();
   }
 
+/* TRAER USUARIO POR NOMBRE */
   async getUserByName(name: string) {
     return this.userRepository.find({ where: { name } });
   }
 
+/* TRAER USUARIO POR DNI */
   async getUserByDni(dni: number) {
     return this.userRepository.findOne({ where: { dni } });
   }
 
+/* TRAER USUARIO POR DNI */
   async getUserById(id: number) {
   return this.userRepository.findOne({ where: { id } });
+}
+
+/* CAMBIAR ESTATUS DEL USUARIO */
+async changeStatus(id: number) {
+  const user = await this.userRepository.findOne({
+    where: { id },
+  });
+
+  if (!user) {
+    throw new NotFoundException('No se ha podido encontrar el usuario');
+  }
+
+  user.active = !user.active;
+
+  return await this.userRepository.save(user);
 }
 }
