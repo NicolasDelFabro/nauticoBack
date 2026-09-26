@@ -25,6 +25,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException('Usuario no válido o dado de baja');
     }
 
-    return { id: usuario.id, dni: usuario.dni, rol: usuario.rol };
+    return {
+      id: usuario.id,
+      dni: usuario.dni,
+      email: usuario.email,
+      name: usuario.name,
+      rol: usuario.rol
+    };
   }
 }
