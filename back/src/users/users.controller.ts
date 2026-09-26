@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } f
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from "@nestjs/passport"
+import { ParseIntPipe } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
@@ -29,8 +30,8 @@ export class UsersController {
       return this.usersService.getAllUsers();
     }
     
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
+  @Patch(':id/active')
+    changeStatus(@Param('id', ParseIntPipe) id: number) {
+      return this.usersService.changeStatus(id);
+    }
 }
