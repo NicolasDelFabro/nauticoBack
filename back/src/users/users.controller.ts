@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from "@nestjs/passport"
 import { ParseIntPipe } from '@nestjs/common';
+import { EditUserDto } from './dto/edit-user';
 
 @Controller('users')
 export class UsersController {
@@ -30,8 +31,11 @@ export class UsersController {
       return this.usersService.getAllUsers();
     }
     
-  @Patch(':id/active')
-    changeStatus(@Param('id', ParseIntPipe) id: number) {
-      return this.usersService.changeStatus(id);
+  @Patch(':id')
+    editUser(
+      @Param('id', ParseIntPipe) id:number,
+      @Body() editUserDto: EditUserDto, 
+    ) {
+      return this.usersService.editUser(id, editUserDto)
     }
 }
