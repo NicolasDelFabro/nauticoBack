@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Users } from './entities/user.entity';
+import { EditUserDto } from './dto/edit-user';
 
 @Injectable()
 export class UsersService {
@@ -52,18 +53,20 @@ export class UsersService {
   return this.userRepository.findOne({ where: { id } });
 }
 
-/* CAMBIAR ESTATUS DEL USUARIO */
-async changeStatus(id: number) {
+/* EDITAR USUARIO */
+async editUser(id: number, editUserDto: EditUserDto) {
+
   const user = await this.userRepository.findOne({
     where: { id },
   });
 
   if (!user) {
-    throw new NotFoundException('No se ha podido encontrar el usuario');
+    throw new NotFoundException('Usuario no encontrado');
   }
 
-  user.active = !user.active;
+  Object.assign(user, editUserDto);
 
-  return await this.userRepository.save(user);
+  return this.userRepository.save(user);
 }
+
 }
